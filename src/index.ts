@@ -25,7 +25,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
           await fsp.mkdir(cachePublicDir, { recursive: true })
         }
         await fsp.cp(publicDir, cachePublicDir, { recursive: true })
-        if (!fs.existsSync(publicModeDir)) {
+        if (fs.existsSync(publicModeDir)) {
           await fsp.cp(publicModeDir, cachePublicDir, { recursive: true })
         }
       }
@@ -35,13 +35,13 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
       const cacheAssetsDir = path.join(cacheDir, 'assets');
       confgAssertsDir = cacheAssetsDir;
       const assetsDir = path.join(rootPath, 'src/assets');
-      const assetsModeDir = path.join(rootPath, "statics", options.mode, 'public');
+      const assetsModeDir = path.join(rootPath, "statics", options.mode, 'assets');
       const copyAsserts = async () => {
         if (!fs.existsSync(cacheAssetsDir)) {
           await fsp.mkdir(cacheAssetsDir, { recursive: true })
         }
         await fsp.cp(assetsDir, cacheAssetsDir, { recursive: true })
-        if (!fs.existsSync(assetsModeDir)) {
+        if (fs.existsSync(assetsModeDir)) {
           await fsp.cp(assetsModeDir, cacheAssetsDir, { recursive: true })
         }
       }
