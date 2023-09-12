@@ -12,14 +12,14 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
   if (options.public !== false) { options.public = true }
   let confgPublicDir: string;
   let confgAssertsDir: string;
-  if (options.mode) { 
+  // if (options.mode) { 
     const rootPath = process.cwd(); // 还有别方案获取 pkg的根目录吗
     const cacheDir = path.join(rootPath, 'node_modules/.saber');
-    if (options.public) {
+    // if (options.public) {
       const cachePublicDir = path.join(cacheDir, "public");
       confgPublicDir = cachePublicDir;
       const publicDir = path.join(rootPath, 'public');
-      const publicModeDir = path.join(rootPath, "statics", options.mode, 'public');
+      const publicModeDir = path.join(rootPath, "statics", options.mode || '', 'public');
       const copyPublic = async () => {
         if (!fs.existsSync(cachePublicDir)) {
           await fsp.mkdir(cachePublicDir, { recursive: true })
@@ -30,12 +30,12 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
         }
       }
       copyPublic();
-    }
-    if (options.assert) {
+    // }
+    // if (options.assert) {
       const cacheAssetsDir = path.join(cacheDir, 'assets');
       confgAssertsDir = cacheAssetsDir;
       const assetsDir = path.join(rootPath, 'src/assets');
-      const assetsModeDir = path.join(rootPath, "statics", options.mode, 'assets');
+      const assetsModeDir = path.join(rootPath, "statics", options.mode || '', 'assets');
       const copyAsserts = async () => {
         if (!fs.existsSync(cacheAssetsDir)) {
           await fsp.mkdir(cacheAssetsDir, { recursive: true })
@@ -45,18 +45,28 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
           await fsp.cp(assetsModeDir, cacheAssetsDir, { recursive: true })
         }
       }
-      copyAsserts();
-    }
+      // copyAsserts();
+    // }
 
-  }
+  // }
   
   return {
     name: 'unplugin-statics-env',
-    async config(config: UserConfig) { 
+    async config(config: UserConfig, { command }: any) { 
       if (options.public) {
         config.publicDir = confgPublicDir; 
+        if (command === 'build') { 
+          await copyPublic();
+        }else {
+          copyPublic();
+        }
       }
-      if (options.assert) { 
+      if (options.assert) {
+        if (command === 'build') {
+          await copyAsserts();
+        } else {
+          copyAsserts();
+        }
         // const a = [
         //   { find: /.*\/assets/, replacement: path.resolve(process.cwd(), "./node_modules/.saber/assets/") },
         // ]
