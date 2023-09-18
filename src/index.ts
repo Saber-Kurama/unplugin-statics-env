@@ -29,7 +29,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
           await fsp.cp(publicModeDir, cachePublicDir, { recursive: true })
         }
       }
-      copyPublic();
+      // copyPublic();
     // }
     // if (options.assert) {
       const cacheAssetsDir = path.join(cacheDir, 'assets');
